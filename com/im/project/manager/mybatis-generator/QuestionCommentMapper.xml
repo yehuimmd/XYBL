@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.QuestionCommentMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.QuestionComment">
+    <id column="CommentId" jdbcType="INTEGER" property="commentid" />
+    <result column="UserId" jdbcType="INTEGER" property="userid" />
+    <result column="QuestionId" jdbcType="INTEGER" property="questionid" />
+    <result column="Date" jdbcType="DATE" property="date" />
+    <result column="ParentCommentId" jdbcType="INTEGER" property="parentcommentid" />
+    <result column="LastUser" jdbcType="INTEGER" property="lastUser"/>
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.QuestionComment">
+    <result column="Content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    CommentId, UserId, QuestionId, Date, ParentCommentId
+  </sql>
+  <sql id="Blob_Column_List">
+    Content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from questioncomment
+    where CommentId = #{commentid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from questioncomment
+    where CommentId = #{commentid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.QuestionComment">
+    insert into questioncomment (CommentId, UserId, QuestionId, 
+      Date, ParentCommentId, Content
+      )
+    values (#{commentid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{questionid,jdbcType=INTEGER}, 
+      #{date,jdbcType=DATE}, #{parentcommentid,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.QuestionComment">
+    insert into questioncomment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentid != null">
+        CommentId,
+      </if>
+      <if test="userid != null">
+        UserId,
+      </if>
+      <if test="questionid != null">
+        QuestionId,
+      </if>
+      <if test="date != null">
+        Date,
+      </if>
+      <if test="parentcommentid != null">
+        ParentCommentId,
+      </if>
+      <if test="content != null">
+        Content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentid != null">
+        #{commentid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="questionid != null">
+        #{questionid,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="parentcommentid != null">
+        #{parentcommentid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.QuestionComment">
+    update questioncomment
+    <set>
+      <if test="userid != null">
+        UserId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="questionid != null">
+        QuestionId = #{questionid,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        Date = #{date,jdbcType=DATE},
+      </if>
+      <if test="parentcommentid != null">
+        ParentCommentId = #{parentcommentid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        Content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where CommentId = #{commentid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.QuestionComment">
+    update questioncomment
+    set UserId = #{userid,jdbcType=INTEGER},
+      QuestionId = #{questionid,jdbcType=INTEGER},
+      Date = #{date,jdbcType=DATE},
+      ParentCommentId = #{parentcommentid,jdbcType=INTEGER},
+      Content = #{content,jdbcType=LONGVARCHAR}
+    where CommentId = #{commentid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.QuestionComment">
+    update questioncomment
+    set UserId = #{userid,jdbcType=INTEGER},
+      QuestionId = #{questionid,jdbcType=INTEGER},
+      Date = #{date,jdbcType=DATE},
+      ParentCommentId = #{parentcommentid,jdbcType=INTEGER}
+    where CommentId = #{commentid,jdbcType=INTEGER}
+  </update>
+
+  <select id="getChildIdByCommentId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select
+    CommentId
+    from questioncomment
+    where ParentCommentId = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getComment" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    *
+    from questioncomment
+    where QuestionId = #{0,jdbcType=INTEGER}
+    limit #{1,jdbcType=INTEGER},#{2,jdbcType=INTEGER}
+
+  </select>
+
+  <update id="updateLastUser">
+    UPDATE question
+    SET LastUser = #{0}
+    WHERE QuestionId = #{1}
+  </update>
+
+  <select id="getUserName" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT UserName
+    from user
+    WHERE UserId = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getCommentByUser" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    *
+    from questioncomment
+    where UserId = #{0,jdbcType=INTEGER}
+    limit #{1,jdbcType=INTEGER},#{2,jdbcType=INTEGER}
+  </select>
+
+  <select id="getSumNumberByUserId" resultType="java.lang.Integer">
+    SELECT SUM(UserId)
+    FROM questioncomment
+    WHERE UserId=#{userId,jdbcType=INTEGER}
+  </select>
+  <select id="getQuestionCommentNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT SUM(UserId)
+    FROM questioncomment
+    WHERE UserId=#{0,jdbcType=INTEGER}
+    and QuestionId=#{0,jdbcType=INTEGER}
+  </select>
+</mapper>

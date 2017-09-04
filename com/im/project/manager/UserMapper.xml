@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.UserMapper">
+	<!-- sql片段 -->
+	<sql id="items_query_where">
+		<!--动态sql用if -->
+		<if test="itemsCustom!=null">
+			<if test="itemsCustom.comment!=null and itemsCustom.comment!=''"></if>
+			comment like "%${itemsCustom.comment}%"
+		</if>
+	</sql>
+	<insert id="savaUser" parameterType="com.im.project.model.User">
+	INSERT INTO `user` VALUES (null,'${UserName}', '12324', '21dw234', '3re', '1', '11237')
+	</insert>
+
+	<!-- <select id="findItemsList" parameterType="com.AdesKing.ssm.pojo.ItemsQueryVo"
+		resultType="com.AdesKing.ssm.pojo.ItemsCustom">
+		select items.* from items
+		<where>
+			<include refid="items_query_where"></include>
+		</where>
+	</select> -->
+
+</mapper>

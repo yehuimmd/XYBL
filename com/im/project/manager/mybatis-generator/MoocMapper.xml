@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.MoocMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.Mooc">
+    <id column="MoocId" jdbcType="INTEGER" property="moocid" />
+    <result column="Video" jdbcType="VARCHAR" property="video" />
+    <result column="CreateDate" jdbcType="DATE" property="createDate" />
+    <result column="Introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="Praise" jdbcType="BIGINT" property="praise" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    MoocId, Video, CreateDate, Introduce, Praise
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mooc
+    where MoocId = #{moocid,jdbcType=INTEGER}
+  </select>
+<!--条件查询-->
+  <select id="findMooc" parameterType="com.im.project.model.Mooc" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from mooc
+    where Introduce = #{introduce,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from mooc
+    where MoocId = #{moocid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.Mooc">
+    insert into mooc (MoocId, Video, CreateDate, 
+      Introduce, Praise)
+    values (#{moocid,jdbcType=INTEGER}, #{video,jdbcType=VARCHAR}, #{createdate,jdbcType=DATE}, 
+      #{introduce,jdbcType=VARCHAR}, #{praise,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.Mooc">
+    insert into mooc
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="moocid != null">
+        MoocId,
+      </if>
+      <if test="video != null">
+        Video,
+      </if>
+      <if test="createdate != null">
+        CreateDate,
+      </if>
+      <if test="introduce != null">
+        Introduce,
+      </if>
+      <if test="praise != null">
+        Praise,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="moocid != null">
+        #{moocid,jdbcType=INTEGER},
+      </if>
+      <if test="video != null">
+        #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=DATE},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="praise != null">
+        #{praise,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.Mooc">
+    update mooc
+    <set>
+      <if test="video != null">
+        Video = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null">
+        CreateDate = #{createdate,jdbcType=DATE},
+      </if>
+      <if test="introduce != null">
+        Introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="praise != null">
+        Praise = #{praise,jdbcType=BIGINT},
+      </if>
+    </set>
+    where MoocId = #{moocid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.Mooc">
+    update mooc
+    set Video = #{video,jdbcType=VARCHAR},
+      CreateDate = #{createdate,jdbcType=DATE},
+      Introduce = #{introduce,jdbcType=VARCHAR},
+      Praise = #{praise,jdbcType=BIGINT}
+    where MoocId = #{moocid,jdbcType=INTEGER}
+  </update>
+  <update id="setPraise" parameterType="java.lang.Integer">
+    update mooc
+    SET praise=praise+1
+    WHERE MoocId=#{id}
+  </update>
+
+  <update id="substractPraice" parameterType="java.lang.Integer">
+    update mooc
+    SET praise=praise-1
+    WHERE MoocId=#{id}
+  </update>
+</mapper>

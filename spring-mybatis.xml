@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+				         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				         http://www.springframework.org/schema/context
+				         http://www.springframework.org/schema/context/spring-context.xsd
+				         http://www.springframework.org/schema/tx
+				         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+				         http://www.springframework.org/schema/aop
+				         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  ">
+
+
+	<!-- 启用注解注入 -->
+	<context:annotation-config/>
+
+	<!-- 自动扫描(自动注入) -->
+	<context:component-scan base-package="com.im.project"/>
+	<!-- 自动加载属性配置文件 -->
+	<!-- 配置数据源 -->
+	<!--  可以自己配置dbcp-->
+	<!-- c3p0 -->
+
+	<bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
+
+		<!--  <property name="jdbcUrl" value="jdbc:mysql://172.22.1.185:3306/com.xybl"/>-->
+		<property name="jdbcUrl" value="jdbc:mysql://115.159.41.186:3306/xybl?characterEncoding=UTF-8"/>
+		<!--<property name="jdbcUrl" value="jdbc:mysql://xtxmyveitiie.mysql.sae.sina.com.cn:10469/xybl?"/>-->
+		<property name="user" value="root"/>
+		<property name="password" value="fgroot"/>
+
+		<!--<property name="password" value="xybl1122" />-->
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize">
+			<value>20</value>
+		</property>
+		<!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime">
+			<value>1800</value>
+		</property>
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement">
+			<value>5</value>
+		</property>
+
+		<!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize">
+			<value>2</value>
+		</property>
+
+		<property name="idleConnectionTestPeriod">
+			<value>1800</value>
+		</property>
+		<!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->
+		<property name="acquireRetryAttempts">
+			<value>30</value>
+		</property>
+		<!--获取连接失败将会引起所有等待连接池来获取连接的线程抛出异常。但是数据源仍有效保留，并在下次调用getConnection()的时候继续尝试获取连接。如果设为true，那么在尝试
+			获取连接失败后该数据源将申明已断开并永久关闭。Default: false-->
+		<property name="breakAfterAcquireFailure">
+			<value>true</value>
+		</property>
+
+		<!--配置sqlSessionFactory 并读取mybatis的一些配置 -->
+	</bean>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="datasource"/>
+		<property name="mapperLocations" value="classpath:com/im/project/manager/mybatis-generator/*.xml"/>
+		<property name="configurationProperties">
+			<props>
+				<prop key="cacheEnabled">true</prop>
+				<prop key="callSettersOnNulls">true</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 自动扫描 将Dao层接口生成代理类注入到Spring -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.im.project.manager"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+
+
+	<!-- 配置事物 -->
+	<bean id="transactionManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="datasource"></property>
+	</bean>
+	<!-- 配置注解事务 -->
+	<!-- <tx:annotation-driven transaction-manager = "transactionManager"/> -->
+
+	<!-- 事物的具体内容 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="modify*" propagation="REQUIRED"/>
+			<tx:method name="del*" propagation="REQUIRED"/>
+			<tx:method name="find*" propagation="REQUIRED"/>
+
+			<tx:method name="load*" propagation="SUPPORTS"/>
+
+			<tx:method name="*" propagation="SUPPORTS"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 定义一个切面,在定义的切面上加入事务 -->
+	<aop:config>
+		<aop:pointcut id="transactionPointcut"
+					  expression="execution(* com.im.project.service.*impl.*(..))"/>
+		<aop:advisor pointcut-ref="transactionPointcut"
+					 advice-ref="transactionAdvice"/>
+	</aop:config>
+</beans>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.TopicMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.Topic">
+    <id column="topicId" jdbcType="INTEGER" property="topicid" />
+    <result column="schoolId" jdbcType="INTEGER" property="schoolid" />
+    <result column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="topicName" jdbcType="VARCHAR" property="topicname" />
+    <result column="createDate" jdbcType="DATE" property="createdate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.Topic">
+    <result column="picutre" jdbcType="VARBINARY" property="picutre" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    topicId, schoolId, userId, topicName, createDate
+  </sql>
+  <sql id="Blob_Column_List">
+    picutre
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from topic
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from topic
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.Topic">
+    insert into topic (topicId, schoolId, userId, 
+      topicName, createDate, picutre
+      )
+    values (#{topicid,jdbcType=INTEGER}, #{schoolid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+      #{topicname,jdbcType=VARCHAR}, #{createdate,jdbcType=DATE}, #{picutre,jdbcType=VARBINARY}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.Topic">
+    insert into topic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="topicid != null">
+        topicId,
+      </if>
+      <if test="schoolid != null">
+        schoolId,
+      </if>
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="topicname != null">
+        topicName,
+      </if>
+      <if test="createdate != null">
+        createDate,
+      </if>
+      <if test="picutre != null">
+        picutre,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="topicid != null">
+        #{topicid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="topicname != null">
+        #{topicname,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=DATE},
+      </if>
+      <if test="picutre != null">
+        #{picutre,jdbcType=VARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.Topic">
+    update topic
+    <set>
+      <if test="schoolid != null">
+        schoolId = #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="topicname != null">
+        topicName = #{topicname,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null">
+        createDate = #{createdate,jdbcType=DATE},
+      </if>
+      <if test="picutre != null">
+        picutre = #{picutre,jdbcType=VARBINARY},
+      </if>
+    </set>
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.Topic">
+    update topic
+    set schoolId = #{schoolid,jdbcType=INTEGER},
+      userId = #{userid,jdbcType=INTEGER},
+      topicName = #{topicname,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=DATE},
+      picutre = #{picutre,jdbcType=VARBINARY}
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.Topic">
+    update topic
+    set schoolId = #{schoolid,jdbcType=INTEGER},
+      userId = #{userid,jdbcType=INTEGER},
+      topicName = #{topicname,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=DATE}
+    where topicId = #{topicid,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="getTopicesBySchool" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT *
+    from topic
+    WHERE schoolId = #{0}
+    ORDER BY createDate
+    limit #{1},#{2}
+  </select>
+
+  <select id="getTopicesByData" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT * FROM topic
+    WHERE schoolId = #{0}
+    ORDER BY createDate
+    limit #{1},#{2}
+  </select>
+
+
+  <select id="selectByTopicName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  SELECT *
+  FROM topic
+  WHERE topicName=#{0,jdbcType=VARCHAR}
+  </select>
+  <select id="getTopicNum" parameterType="java.lang.Integer"  resultType="java.lang.Integer">
+    SELECT sum(userId)
+    FROM topic
+    WHERE schoolId = #{0,jdbcType=INTEGER}
+    AND
+      userId = #{0,jdbcType=INTEGER}
+  </select>
+
+</mapper>

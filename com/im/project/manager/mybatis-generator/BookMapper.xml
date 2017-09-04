@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.BookMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.Book">
+    <id column="BookId" jdbcType="INTEGER" property="bookid" />
+    <result column="Picture" jdbcType="VARCHAR" property="picture" />
+    <result column="Author" jdbcType="VARCHAR" property="author" />
+    <result column="BookName" jdbcType="VARCHAR" property="bookName" />
+    <result column="Introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="Publisher" jdbcType="VARCHAR" property="publisher" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    BookId, Picture, Author, BookName, Introduce, Publisher
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from book
+    where BookId = #{bookid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByName" parameterType="String" resultMap="BaseResultMap">
+    select
+    *
+    from book
+    where BookName = #{bookName,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from book
+    where BookId = #{bookid,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.im.project.model.Book">
+    insert into book (BookId, Picture, Author, 
+      BookName, Introduce, Publisher
+      )
+    values (#{bookid,jdbcType=INTEGER}, #{picture,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{bookname,jdbcType=VARCHAR}, #{introduce,jdbcType=VARCHAR}, #{publisher,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.Book">
+    insert into book
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bookid != null">
+        BookId,
+      </if>
+      <if test="picture != null">
+        Picture,
+      </if>
+      <if test="author != null">
+        Author,
+      </if>
+      <if test="bookname != null">
+        BookName,
+      </if>
+      <if test="introduce != null">
+        Introduce,
+      </if>
+      <if test="publisher != null">
+        Publisher,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bookid != null">
+        #{bookid,jdbcType=INTEGER},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="bookname != null">
+        #{bookname,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="publisher != null">
+        #{publisher,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.Book">
+    update book
+    <set>
+      <if test="picture != null">
+        Picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        Author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="bookname != null">
+        BookName = #{bookname,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        Introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="publisher != null">
+        Publisher = #{publisher,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BookId = #{bookid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.Book">
+    update book
+    set Picture = #{picture,jdbcType=VARCHAR},
+      Author = #{author,jdbcType=VARCHAR},
+      BookName = #{bookname,jdbcType=VARCHAR},
+      Introduce = #{introduce,jdbcType=VARCHAR},
+      Publisher = #{publisher,jdbcType=VARCHAR}
+    where BookId = #{bookid,jdbcType=INTEGER}
+  </update>
+</mapper>

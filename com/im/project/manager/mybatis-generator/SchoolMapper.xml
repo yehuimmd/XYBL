@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.SchoolMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.School">
+    <id column="SchoolId" jdbcType="INTEGER" property="schoolid" />
+    <result column="Logo" jdbcType="VARCHAR" property="logo" />
+    <result column="SchoolMate" jdbcType="VARCHAR" property="schoolmate" />
+    <result column="BuildDate" jdbcType="DATE" property="builddate" />
+    <result column="Address" jdbcType="VARCHAR" property="address" />
+    <result column="SchoolName" jdbcType="VARCHAR" property="schoolname" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.SchoolWithBLOBs">
+    <result column="Culture" jdbcType="LONGVARCHAR" property="culture" />
+    <result column="Information" jdbcType="LONGVARCHAR" property="information" />
+    <result column="History" jdbcType="LONGVARCHAR" property="history" />
+    <result column="Learning" jdbcType="LONGVARCHAR" property="learning" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    SchoolId, Logo, SchoolMate, BuildDate, Address, SchoolName
+  </sql>
+  <sql id="Blob_Column_List">
+    Culture, Information, History, Learning
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from school
+    where SchoolId = #{schoolid,jdbcType=INTEGER}
+  </select>
+
+
+
+  <select id="selectByName" parameterType="String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from school
+    where SchoolName = #{schoolid,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getSchools" parameterType="String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from school
+  </select>
+
+  <select id="selectBySchoolName" parameterType="String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from school
+    WHERE SchoolName = #{schoolnam,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from school
+    where SchoolId = #{schoolid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.SchoolWithBLOBs">
+    insert into school (SchoolId, Logo, SchoolMate, 
+      BuildDate, Address, SchoolName, 
+      Culture, Information, History, 
+      Learning)
+    values (#{schoolid,jdbcType=INTEGER}, #{logo,jdbcType=VARCHAR}, #{schoolmate,jdbcType=VARCHAR}, 
+      #{builddate,jdbcType=DATE}, #{address,jdbcType=VARCHAR}, #{schoolname,jdbcType=VARCHAR}, 
+      #{culture,jdbcType=LONGVARCHAR}, #{information,jdbcType=LONGVARCHAR}, #{history,jdbcType=LONGVARCHAR}, 
+      #{learning,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.SchoolWithBLOBs">
+    insert into school
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="schoolid != null">
+        SchoolId,
+      </if>
+      <if test="logo != null">
+        Logo,
+      </if>
+      <if test="schoolmate != null">
+        SchoolMate,
+      </if>
+      <if test="builddate != null">
+        BuildDate,
+      </if>
+      <if test="address != null">
+        Address,
+      </if>
+      <if test="schoolname != null">
+        SchoolName,
+      </if>
+      <if test="culture != null">
+        Culture,
+      </if>
+      <if test="information != null">
+        Information,
+      </if>
+      <if test="history != null">
+        History,
+      </if>
+      <if test="learning != null">
+        Learning,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="schoolid != null">
+        #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="logo != null">
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolmate != null">
+        #{schoolmate,jdbcType=VARCHAR},
+      </if>
+      <if test="builddate != null">
+        #{builddate,jdbcType=DATE},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolname != null">
+        #{schoolname,jdbcType=VARCHAR},
+      </if>
+      <if test="culture != null">
+        #{culture,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="information != null">
+        #{information,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="history != null">
+        #{history,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="learning != null">
+        #{learning,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.SchoolWithBLOBs">
+    update school
+    <set>
+      <if test="logo != null">
+        Logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolmate != null">
+        SchoolMate = #{schoolmate,jdbcType=VARCHAR},
+      </if>
+      <if test="builddate != null">
+        BuildDate = #{builddate,jdbcType=DATE},
+      </if>
+      <if test="address != null">
+        Address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolname != null">
+        SchoolName = #{schoolname,jdbcType=VARCHAR},
+      </if>
+      <if test="culture != null">
+        Culture = #{culture,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="information != null">
+        Information = #{information,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="history != null">
+        History = #{history,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="learning != null">
+        Learning = #{learning,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where SchoolId = #{schoolid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.SchoolWithBLOBs">
+    update school
+    set Logo = #{logo,jdbcType=VARCHAR},
+      SchoolMate = #{schoolmate,jdbcType=VARCHAR},
+      BuildDate = #{builddate,jdbcType=DATE},
+      Address = #{address,jdbcType=VARCHAR},
+      SchoolName = #{schoolname,jdbcType=VARCHAR},
+      Culture = #{culture,jdbcType=LONGVARCHAR},
+      Information = #{information,jdbcType=LONGVARCHAR},
+      History = #{history,jdbcType=LONGVARCHAR},
+      Learning = #{learning,jdbcType=LONGVARCHAR}
+    where SchoolId = #{schoolid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.School">
+    update school
+    set Logo = #{logo,jdbcType=VARCHAR},
+      SchoolMate = #{schoolmate,jdbcType=VARCHAR},
+      BuildDate = #{builddate,jdbcType=DATE},
+      Address = #{address,jdbcType=VARCHAR},
+      SchoolName = #{schoolname,jdbcType=VARCHAR}
+    where SchoolId = #{schoolid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.MoocCommentMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.MoocComment">
+    <id column="CommentId" jdbcType="INTEGER" property="commentId" />
+    <result column="UserId" jdbcType="INTEGER" property="userId" />
+    <result column="MoocId" jdbcType="INTEGER" property="moocId" />
+    <result column="CreateDate" jdbcType="DATE" property="createDate" />
+    <result column="ParentCommentId" jdbcType="INTEGER" property="parentCommentId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.MoocComment">
+    <result column="Content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    CommentId, UserId, MoocId, CreateDate, ParentCommentId
+  </sql>
+  <sql id="Blob_Column_List">
+    Content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from Mooccomment
+    where CommentId = #{commentid,jdbcType=INTEGER}
+  </select>
+
+  <!--条件查询-->
+  <select id="findMoocComment" parameterType="com.im.project.model.MoocComment" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from Mooccomment
+    where  Content = #{content,jdbcType=LONGVARCHAR} AND UserId=#{userid,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getChildIdByCommentId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select
+    CommentId
+    from newscomment
+    where ParentCommentId = #{id,jdbcType=INTEGER}
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from Mooccomment
+    where CommentId = #{commentid,jdbcType=INTEGER} OR ParentCommentId=#{commentid,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByMoocId" parameterType="java.lang.Integer">
+    delete from Mooccomment
+    where MoocId = #{moocid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.MoocComment">
+    insert into mooccomment (CommentId, UserId, MoocId, 
+      CreateDate, ParentCommentId, Content
+      )
+    values (#{commentid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{moocid,jdbcType=INTEGER}, 
+      #{createdate,jdbcType=DATE}, #{parentcommentid,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.MoocComment">
+    insert into Mooccomment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        CommentId,
+      </if>
+      <if test="userId != null">
+        UserId,
+      </if>
+      <if test="moocId != null">
+        MoocId,
+      </if>
+      <if test="createDate != null">
+        CreateDate,
+      </if>
+      <if test="parentCommentId != null">
+        ParentCommentId,
+      </if>
+      <if test="content != null">
+        Content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentiId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="moocId != null">
+        #{moocId,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="parentCommentId != null">
+        #{parentCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.MoocComment">
+    update Mooccomment
+    <set>
+      <if test="userId != null">
+        UserId = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="moocId != null">
+        MoocId = #{MoocId,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        CreateDate = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="parentCommentId != null">
+        ParentCommentId = #{parentCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        Content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where CommentId = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.MoocComment">
+    update Mooccomment
+    set UserId = #{userId,jdbcType=INTEGER},
+      MoocId = #{MoocId,jdbcType=INTEGER},
+      CreateDate = #{createDate,jdbcType=DATE},
+      ParentCommentId = #{parentCommentId,jdbcType=INTEGER},
+      Content = #{content,jdbcType=LONGVARCHAR}
+    where CommentId = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.MoocComment">
+    update Mooccomment
+    set UserId = #{userId,jdbcType=INTEGER},
+      MoocId = #{MoocId,jdbcType=INTEGER},
+      CreateDate = #{createDate,jdbcType=DATE},
+      ParentCommentId = #{parentCommentId,jdbcType=INTEGER}
+    where CommentId = #{commentId,jdbcType=INTEGER}
+  </update>
+  <select id="getComments" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select
+  *
+  from Mooccomment
+  where MoocId = #{MoocId,jdbcType=INTEGER}
+</select>
+
+  <select id="getCommentsByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  select
+  *
+  from Mooccomment
+  where UserId = #{userId,jdbcType=INTEGER}
+</select>
+
+  <select id="getCommentsCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select
+    COUNT(*)
+    from Mooccomment
+
+  </select>
+</mapper>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.Article">
+    <id column="AricleId" jdbcType="INTEGER" property="aricleid" />
+    <result column="Title" jdbcType="VARCHAR" property="title" />
+    <result column="UserId" jdbcType="INTEGER" property="userid" />
+    <result column="SchoolId" jdbcType="INTEGER" property="schoolid" />
+    <result column="PublishDate" jdbcType="DATE" property="publishdate" />
+    <result column="Praise" jdbcType="BIGINT" property="praise" />
+    <result column="Comment" jdbcType="BIGINT" property="comment" />
+    <result column="TopicId" jdbcType="INTEGER" property="topicid" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.Article">
+    <result column="Text" jdbcType="LONGVARCHAR" property="text" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    AricleId, Title, UserId, SchoolId, PublishDate, Praise, Comment
+  </sql>
+  <sql id="Blob_Column_List">
+    Text
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from Article
+    where AricleId = #{aricleid,jdbcType=INTEGER}
+  </select>
+
+  <select id="findArticle" parameterType="com.im.project.model.Article" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from Article
+    WHERE AricleId = (SELECT LAST_INSERT_ID())
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from Article
+    where AricleId = #{aricleid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.Article">
+    insert into article (AricleId, Title, UserId, 
+      SchoolId, PublishDate, Praise, 
+      Comment, Text)
+    values (#{aricleid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, 
+      #{schoolid,jdbcType=INTEGER}, #{publishdate,jdbcType=DATE}, #{praise,jdbcType=BIGINT}, 
+      #{comment,jdbcType=BIGINT}, #{text,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.Article">
+    insert into Article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="aricleid != null">
+        AricleId,
+      </if>
+      <if test="title != null">
+        Title,
+      </if>
+      <if test="topicid != null">
+      TopicId,
+      </if>
+      <if test="userid != null">
+        UserId,
+      </if>
+      <if test="schoolid != null">
+        SchoolId,
+      </if>
+      <if test="publishdate != null">
+        PublishDate,
+      </if>
+      <if test="praise != null">
+        Praise,
+      </if>
+      <if test="comment != null">
+        Comment,
+      </if>
+      <if test="text != null">
+        Text,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="aricleid != null">
+        #{aricleid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="topicid != null">
+        #{topicid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="publishdate != null">
+        #{publishdate,jdbcType=DATE},
+      </if>
+      <if test="praise != null">
+        #{praise,jdbcType=BIGINT},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=BIGINT},
+      </if>
+      <if test="text != null">
+        #{text,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.Article">
+    update Article
+    <set>
+      <if test="title != null">
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        UserId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="topicid != null">
+        #{topicid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        SchoolId = #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="publishdate != null">
+        PublishDate = #{publishdate,jdbcType=DATE},
+      </if>
+      <if test="praise != null">
+        Praise = #{praise,jdbcType=BIGINT},
+      </if>
+      <if test="comment != null">
+        Comment = #{comment,jdbcType=BIGINT},
+      </if>
+      <if test="text != null">
+        Text = #{text,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where AricleId = #{aricleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.Article">
+    update Article
+    set Title = #{title,jdbcType=VARCHAR},
+      TopicId = #{topicid,jdbcType=VARCHAR},
+      UserId = #{userid,jdbcType=INTEGER},
+      SchoolId = #{schoolid,jdbcType=INTEGER},
+      PublishDate = #{publishdate,jdbcType=DATE},
+      Praise = #{praise,jdbcType=BIGINT},
+      Comment = #{comment,jdbcType=BIGINT},
+      Text = #{text,jdbcType=LONGVARCHAR}
+    where AricleId = #{aricleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.Article">
+    update Article
+    set Title = #{title,jdbcType=VARCHAR},
+      TopicId = #{topicid,jdbcType=VARCHAR},
+      UserId = #{userid,jdbcType=INTEGER},
+      SchoolId = #{schoolid,jdbcType=INTEGER},
+      PublishDate = #{publishdate,jdbcType=DATE},
+      Praise = #{praise,jdbcType=BIGINT},
+      Comment = #{comment,jdbcType=BIGINT}
+    where AricleId = #{aricleid,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByTitle" parameterType="com.im.project.model.Article" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from Article
+    where Title = #{title,jdbcType=VARCHAR}
+  </select>
+
+  <update id="setPraise" parameterType="java.lang.Integer">
+    update Article
+    SET praise=praise+1
+    WHERE AricleId=#{id}
+  </update>
+  <update id="substractPraise" parameterType="java.lang.Integer">
+    update Article
+    SET praise=praise-1
+    WHERE AricleId=#{id}
+  </update>
+
+  <select id="getArticlesBySchool" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT *
+    FROM Article
+    WHERE SchoolId=#{2}
+    ORDER BY publishDate
+    limit #{0},#{1}
+  </select>
+
+  <select id="getArticlesByUser" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT *
+    FROM Article
+    WHERE UserId=#{2}
+    ORDER BY publishDate
+    limit #{0},#{1}
+  </select>
+
+  <select id="getArticlesByTopic" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT *
+    FROM Article
+    WHERE TopicId=#{2}
+    ORDER BY publishDate
+    limit #{0},#{1}
+  </select>
+
+  <select id="getArticleSumNumber" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(aricleId)
+    FROM Article
+    WHERE
+    SchoolId=#{2}
+  </select>
+
+</mapper>

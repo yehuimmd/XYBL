@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.QuestionMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.Question">
+    <id column="QuestionId" jdbcType="INTEGER" property="questionid" />
+    <result column="UserId" jdbcType="INTEGER" property="userid" />
+    <result column="SchoolId" jdbcType="INTEGER" property="schoolid" />
+    <result column="CreateDate" jdbcType="DATE" property="createdate" />
+    <result column="Title" jdbcType="VARCHAR" property="title" />
+    <result column="LastUser" jdbcType="VARCHAR" property="lastUser"/>
+    <result column="Content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.Question">
+    <result column="Content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    QuestionId, UserId, SchoolId, CreateDate, Title
+  </sql>
+  <sql id="Blob_Column_List">
+    Content
+  </sql>
+  <select id="selectByTitle" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from question
+    where Title = #{0,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    *
+    from question
+    where QuestionId = #{questionid,jdbcType=INTEGER}
+  </select>
+  <select id="findQuestion" parameterType="com.im.project.model.Question" resultMap="ResultMapWithBLOBs">
+    select
+    *
+    from question
+    where QuestionId = (SELECT LAST_INSERT_ID())
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from question
+    where QuestionId = #{questionid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.Question">
+    insert into question (QuestionId, UserId, SchoolId, 
+      CreateDate, Title, Content
+      )
+    values (#{questionid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{schoolid,jdbcType=INTEGER}, 
+      #{createdate,jdbcType=DATE}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.Question">
+    insert into question
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="questionid != null">
+        QuestionId,
+      </if>
+      <if test="userid != null">
+        UserId,
+      </if>
+      <if test="schoolid != null">
+        SchoolId,
+      </if>
+      <if test="createdate != null">
+        CreateDate,
+      </if>
+      <if test="title != null">
+        Title,
+      </if>
+      <if test="content != null">
+        Content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="questionid != null">
+        #{questionid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=DATE},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.Question">
+    update question
+    <set>
+      <if test="userid != null">
+        UserId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        SchoolId = #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null">
+        CreateDate = #{createdate,jdbcType=DATE},
+      </if>
+      <if test="title != null">
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        Content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where QuestionId = #{questionid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.Question">
+    update question
+    set UserId = #{userid,jdbcType=INTEGER},
+      SchoolId = #{schoolid,jdbcType=INTEGER},
+      CreateDate = #{createdate,jdbcType=DATE},
+      Title = #{title,jdbcType=VARCHAR},
+      Content = #{content,jdbcType=LONGVARCHAR}
+    where QuestionId = #{questionid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.Question">
+    update question
+    set UserId = #{userid,jdbcType=INTEGER},
+      SchoolId = #{schoolid,jdbcType=INTEGER},
+      CreateDate = #{createdate,jdbcType=DATE},
+      Title = #{title,jdbcType=VARCHAR}
+    where QuestionId = #{questionid,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectBydate" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    FROM question
+    ORDER BY CreateDate
+    limit #{0},#{1}
+  </select>
+
+<select id="getQuestionSumNumber" resultType="java.lang.Integer">
+  SELECT COUNT(QuestionId)
+   FROM  question
+</select>
+
+  <select id="getQuestionsByUser" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    FROM question
+    WHERE userid=#{2}
+    ORDER BY CreateDate
+    limit #{0},#{1}
+  </select>
+
+  <select id="getQuestionBySchool" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    FROM question
+    WHERE SchoolId=#{2}
+    ORDER BY CreateDate
+    limit #{0},#{1}
+  </select>
+
+</mapper>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.project.manager.NewsMapper">
+  <resultMap id="BaseResultMap" type="com.im.project.model.News">
+    <id column="NewsId" jdbcType="INTEGER" property="newsid" />
+    <result column="Video" jdbcType="VARCHAR" property="video" />
+    <result column="Title" jdbcType="VARCHAR" property="title" />
+    <result column="SecondTitle" jdbcType="VARCHAR" property="secondTitle" />
+    <result column="CreateDate" jdbcType="DATE" property="createDate" />
+    <result column="Picture" jdbcType="VARCHAR" property="picture" />
+    <result column="UserId" jdbcType="INTEGER" property="userid" />
+    <result column="SchoolId" jdbcType="INTEGER" property="schoolid" />
+    <result column="Praise" jdbcType="BIGINT" property="praise" />
+    <result column="CommentNumber" jdbcType="INTEGER" property="commentNumber"/>
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.im.project.model.News">
+    <result column="Text" jdbcType="LONGVARCHAR" property="text" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    NewsId, Video, Title, SecondTitle, CreateDate, Picture, UserId, SchoolId, Praise
+  </sql>
+  <sql id="Blob_Column_List">
+    Text
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    where NewsId = #{newsid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByTitle" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    where NewsTitle = #{newstitle,jdbcType=VARCHAR}
+  </select>
+  <select id="findNews" parameterType="com.im.project.model.News" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    where NewsTitle = #{newstitle,jdbcType=VARCHAR}AND Text= #{text,jdbcType=LONGVARCHAR}
+    AND SecondTitle = #{secondtitle,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySchoolId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    where SchoolId = #{schoolId,jdbcType=INTEGER}
+    ORDER BY praise AND CreateDate
+  </select>
+
+  <select id="selectByDate" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    where SchoolId = #{schoolId,jdbcType=INTEGER}
+    ORDER BY CreateDate
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from news
+    where NewsId = #{newsid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.im.project.model.News">
+    insert into news (NewsId, Video, Title, 
+      SecondTitle, CreateDate, Picture, 
+      UserId, SchoolId, Praise, 
+      Text)
+    values (#{newsid,jdbcType=INTEGER}, #{video,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{secondtitle,jdbcType=VARCHAR}, #{createdate,jdbcType=DATE}, #{picture,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=INTEGER}, #{schoolid,jdbcType=INTEGER}, #{praise,jdbcType=BIGINT}, 
+      #{text,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.im.project.model.News">
+    insert into news
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="newsid != null">
+        NewsId,
+      </if>
+      <if test="video != null">
+        Video,
+      </if>
+      <if test="title != null">
+        Title,
+      </if>
+      <if test="secondtitle != null">
+        SecondTitle,
+      </if>
+      <if test="createdate != null">
+        CreateDate,
+      </if>
+      <if test="picture != null">
+        Picture,
+      </if>
+      <if test="userid != null">
+        UserId,
+      </if>
+      <if test="schoolid != null">
+        SchoolId,
+      </if>
+      <if test="praise != null">
+        Praise,
+      </if>
+      <if test="text != null">
+        Text,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="newsid != null">
+        #{newsid,jdbcType=INTEGER},
+      </if>
+      <if test="video != null">
+        #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="secondtitle != null">
+        #{secondtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=DATE},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="praise != null">
+        #{praise,jdbcType=BIGINT},
+      </if>
+      <if test="text != null">
+        #{text,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.im.project.model.News">
+    update news
+    <set>
+      <if test="video != null">
+        Video = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="secondtitle != null">
+        SecondTitle = #{secondtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null">
+        CreateDate = #{createdate,jdbcType=DATE},
+      </if>
+      <if test="picture != null">
+        Picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        UserId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null">
+        SchoolId = #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="praise != null">
+        Praise = #{praise,jdbcType=BIGINT},
+      </if>
+      <if test="text != null">
+        Text = #{text,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where NewsId = #{newsid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.im.project.model.News">
+    update news
+    set Video = #{video,jdbcType=VARCHAR},
+      Title = #{title,jdbcType=VARCHAR},
+      SecondTitle = #{secondtitle,jdbcType=VARCHAR},
+      CreateDate = #{createdate,jdbcType=DATE},
+      Picture = #{picture,jdbcType=VARCHAR},
+      UserId = #{userid,jdbcType=INTEGER},
+      SchoolId = #{schoolid,jdbcType=INTEGER},
+      Praise = #{praise,jdbcType=BIGINT},
+      Text = #{text,jdbcType=LONGVARCHAR}
+    where NewsId = #{newsid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.im.project.model.News">
+    update news
+    set Video = #{video,jdbcType=VARCHAR},
+      Title = #{title,jdbcType=VARCHAR},
+      SecondTitle = #{secondtitle,jdbcType=VARCHAR},
+      CreateDate = #{createdate,jdbcType=DATE},
+      Picture = #{picture,jdbcType=VARCHAR},
+      UserId = #{userid,jdbcType=INTEGER},
+      SchoolId = #{schoolid,jdbcType=INTEGER},
+      Praise = #{praise,jdbcType=BIGINT}
+    where NewsId = #{newsid,jdbcType=INTEGER}
+  </update>
+  <update id="setPraise" parameterType="java.lang.Integer">
+    update news
+    SET praise=praise+1
+  </update>
+  <update id="substractPraise" parameterType="java.lang.Integer">
+    update news
+    SET praise=praise-1
+  </update>
+
+  <select id="getNewsSumNumber" resultType="java.lang.Integer">
+    SELECT COUNT(NewsId)
+    FROM news
+  </select>
+</mapper>

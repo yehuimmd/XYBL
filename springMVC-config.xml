@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<beans xmlns="http://www.springframework.org/schema/beans"   
+    xmlns:context="http://www.springframework.org/schema/context"   
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:aop="http://www.springframework.org/schema/aop"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context.xsd  
+    http://www.springframework.org/schema/mvc   
+    http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    "> 
+	<!-- 启用注解注入 -->
+	<context:annotation-config  />
+	<!-- 自动扫描(自动注入) -->
+	<context:component-scan base-package = "com.im.project" />
+
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		 <property name="messageConverters">
+			<list>
+				<ref bean="stringHttpMessageConverter" />
+				<ref bean="jsonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<bean id="stringHttpMessageConverter"
+		class="org.springframework.http.converter.StringHttpMessageConverter" />
+	<bean id="jsonHttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+	
+	<!-- 配置视图解析器 将视图逻辑名解析为/*.jsp -->
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- 配置文件上传-->
+	 <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+   		<property name="defaultEncoding" value="utf-8"></property>
+		 <!--最多上传500MB的内容 -->
+   		<property name="maxUploadSize" value="524288000"></property>
+   		<property name="maxInMemorySize" value="40960"></property>
+   </bean>
+
+   <!-- 配置全局的异常处理器 -->
+
+   <!--  <bean class="com.im.project.exception.CustomExceptionResolver"></bean>  -->
+
+   <!--
+	&lt;!&ndash; 拦截response &ndash;&gt;
+	<bean id="listener" class="org.junit.runner.Result$Listener"/>
+	<aop:config>
+		<aop:aspect id="myListener" ref="listener">
+			<aop:pointcut expression="execution(* com.im.project.controller.*.*(..))" id="listenerCut"/>
+			<aop:around method="around" pointcut-ref="listenerCut"/>
+		</aop:aspect>
+	</aop:config>
+-->
+
+
+	<!-- 配置拦截器 -->
+	<!-- 多个拦截器,顺序执行 -->    
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+		  如果不配置或/**,将拦截所有的Controller  
+			<mvc:mapping path="/control/**" />
+			<mvc:exclude-mapping path="/control/user/login.do" /> 
+			<bean class="com.im.project.interceptor.isLoginInterceptor" />
+		</mvc:interceptor> 
+		
+	</mvc:interceptors> -->
+</beans>
+
